@@ -67,14 +67,25 @@ lst_2000<- raster("lst_2000.tif")
 > import<- lapply(rlist,raster)
 > TGr<- stack(import)
 > TGr
-
+# funzione levelplot più "raffinata" di plot
+# plotto i file .tif in un unico grafico con un'unica barra
+# immagine finale più sintetica ed efficace
 levelplot(TGr)
+# lego tramite $ due oggetti
+# con $ lego TGr a lst_2000
+# in questo modo riesco a vedere che dove ci sono temperature minori ricorrono anche i valori di media più bassi
 levelplot(TGr$lst_2000)
+# imposto la mia colorRampPalette per vedere ad esempio i ghiacci con il colore "Blue"
 cl <- colorRampPalette(c("blue","light blue","pink","red"))(100)
 levelplot(TGr, col.regions=cl)
+# aggiungo un ulteriore argomento
+# con names.attr=c do un nome ad ognuno dei quattro grafici
 levelplot(TGr,col.regions=cl, names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
+# aggiungo un ulteriore argomento
+# con main= do un titolo al mio grafico finale
 levelplot(TGr,col.regions=cl, main="LST variation in time",
           names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
+
 
 #melt list
 meltlist<- list.files(pattern="melt")
