@@ -85,19 +85,40 @@ levelplot(TGr,col.regions=cl, names.attr=c("July 2000","July 2005", "July 2010",
 # con main= do un titolo al mio grafico finale
 levelplot(TGr,col.regions=cl, main="LST variation in time",
           names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
-pdf("LST var.pdf")
+pdf("lstvar.pdf")
+levelplot(TGr,col.regions=cl, main="LST variation in time",
+          names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
+dev.off()
+pdf("lstvar.pdf")
 levelplot(TGr,col.regions=cl, main="LST variation in time",
           names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
 dev.off()
 
 
 #melt list
-meltlist<- list.files(pattern="melt")
+# scaricare i file dal pacchetto melt_greenland
+# creo sempre una lista con la funzione list.files questa volta però con i file che hanno in comune "melt" e non più .tif
+# grande utilità della funzione list.files
+# evito di utilizzare la funzione raster per 28 volte
+# uso la stessa funzione per raggruppare assieme 28 files
+meltlist <- list.files(pattern="melt")
 melt<- lapply(meltlist,raster)
+# chiamo TMel il nuovo oggetto associato alla funzione stack
 TMel<- stack(melt)
 levelplot(TMel)
+# faccio una prova con una nuova scala di colori
+cl<- colorRampPalette(c("green","red","pink"))(100)
+# inserisco anche un titolo per indicare la scala temporale analizzata dai files
+levelplot(TMel,col.regions=cl, main="melt1979-2007")
+
 cl <- colorRampPalette(c("blue","light blue","pink","red"))(100)
-melt_amount <- melt$X2007annual_melt-melt$X1979annual_melt
+# voglio quantificare graficamente la perdita di ghiaccio
+# sottraggo la quantità di ghiaccio del 2007 a quella del 1979
+# utilizzo $ per legare gli oggetti _melt all'oggetto TMel
+# senza $ R darebbe errore perchè non troverebbe l'oggetto che si trova in un altro spazio
+melt_amount <- TMel$X2007annual_melt-TMel$X1979annual_melt
 clb <-colorRampPalette(c("blue","white","red"))(100)
 plot(melt_amount,col=clb)
+levelplot(melt_amount,col.regions=clb)
+dev.off()
 
