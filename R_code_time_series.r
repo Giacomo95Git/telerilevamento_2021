@@ -82,7 +82,7 @@ melt<- lapply(meltlist,raster)
 TMel<- stack(melt)
 levelplot(TMel)
 cl <- colorRampPalette(c("blue","light blue","pink","red"))(100)
-melt_amount <- melt$X2007annual_melt-melt$X1979annual_melt
+melt_amount <- TMel$X2007annual_melt-TMel$X1979annual_melt
 clb <-colorRampPalette(c("blue","white","red"))(100)
 plot(melt_amount,col=clb)
 
