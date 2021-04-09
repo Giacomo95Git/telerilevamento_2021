@@ -85,6 +85,10 @@ levelplot(TGr,col.regions=cl, names.attr=c("July 2000","July 2005", "July 2010",
 # con main= do un titolo al mio grafico finale
 levelplot(TGr,col.regions=cl, main="LST variation in time",
           names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
+pdf("LST var.pdf")
+levelplot(TGr,col.regions=cl, main="LST variation in time",
+          names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
+dev.off()
 
 
 #melt list
