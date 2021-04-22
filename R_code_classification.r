@@ -47,3 +47,7 @@ sunc <- unsuperClass(sun, nClasses=3)
 cl <- colorRampPalette(c('yellow','red','black'))(100)
 plot(sunc$map,col=cl)
 dev.off()
+# con la funzione setseed(numero x) faccio in modo che le repliche siano sempre le stesse per il modello
+# con plot(soc$map) la combinazione dei 1000 pixel rimarebbe casuale
+# setseed(42)
+# miglioro la legenda con una scala più verosimile e valori più verosimili con ggplot
