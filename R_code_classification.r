@@ -1,3 +1,4 @@
+# Giorno 1
 # R code classification
 # classificazione delle immagini 
 # accorpo immagini con pixel simili in CLASSI
@@ -12,7 +13,7 @@ plotRGB(so, 1, 2, 3, stretch="lin")
 #classificazione non supervisionata
 #il software classifica in automatico tutti gli altri pixel in funzione del trading set creato
 #calcolo distanze spettrali
-#concetto di "Maximum likeness"
+#concetto di "Maximum likelihood"
 # la funzione unsuperClass serve proprio per operare la classificazione non supervisionata
 # attenzione la c è sempre maiuscola 
 # R key sensitive
@@ -51,3 +52,22 @@ dev.off()
 # con plot(soc$map) la combinazione dei 1000 pixel rimarebbe casuale
 # setseed(42)
 # miglioro la legenda con una scala più verosimile e valori più verosimili con ggplot
+
+
+# Giorno 2
+# Grand Canyon
+# classificazione immagini Grand Canyon 
+# download from https://landsat.visibleearth.nasa.gov/view.php?id=80948
+setwd("C:/lab/")
+library(raster)
+library(RStoolbox)
+gc <- brick("dolansprings_oli_2013088_canyon_lrg.jpg")
+plotRGB(gc,r=1,g=2,b= 3,stretch="lin")
+plotRGB(gc,r=1,g=2,b= 3,stretch="hist")
+gcc2 <- unsuperClass(gc, nClasses=2)
+gcc2
+plot(gcc2$map)
+#plottaggio con 4 classi
+gcc4 <- unsuperClass(gc, nClasses=4)
+gcc4
+plot(gcc4$map)
