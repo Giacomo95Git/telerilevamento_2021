@@ -1,3 +1,4 @@
+#Giorno 1
 # R_code_multivariate_analysis
 setwd("C:/lab/")
 library(raster)
@@ -31,7 +32,13 @@ pairs(p224r63_2011)
 #aggregate cell
 # ricampionamento
 #resample
-
+# la funzione aggregate aggrega i pixel facendo una media con una risoluzione più bassa
+# riduco la dimensione dell'immagine diminuendo la risoluzione
+# aggregazione di pixel
+# indico il nuovo oggetto con res(resample)
+# l'argomento importante è "fact"
+# "fact" rappresenta il fattore di riduzione della risoluzione es. fattore 10
+# da dimensione 300*300 a 30*30
 p224r63_2011res <- aggregate(p224r63_2011, fact=10)
 p224r63_2011res
 par(mfrow=c(2,1))
