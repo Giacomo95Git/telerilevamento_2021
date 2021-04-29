@@ -41,13 +41,22 @@ pairs(p224r63_2011)
 # da dimensione 300*300 a 30*30
 p224r63_2011res <- aggregate(p224r63_2011, fact=10)
 p224r63_2011res
+# setto in due righe e 1 colonna i due plotRGB a dimensione 300*300 e 30*30
 par(mfrow=c(2,1))
 plotRGB(p224r63_2011, r=4 ,g=3, b=2, stretch="lin")
 plotRGB(p224r63_2011res , r=4 ,g=3, b=2, stretch="lin")
-
-
+# funzione rasterPCA compatta il pacchetto di dati in un numero minore di bande
+# indico il nuovo oggetto con _pca
+# mai usare il simbolo -
+# il simbolo - viene letto come "meno" e non come trattino
+#al nuovo oggetto viene associata una map e un modello
 p224r63_2011res_pca <- rasterPCA(p224r63_2011res)
-
+# con la funzione summary indico il sommario ad esempio del modello prodotto
+# associo il nuovo oggetto al solo modello tramite $
 summary(p224r63_2011res_pca$model)
+#la PC1 spiega il 99,83% della variabilità
+# con le prime tre componenti spiego il 99,998% della variabilità
+# la PC1 solitamente spiega la % percentuale della variabilità
+# faccio un plot del nuovo oggetto associandolo non più al suo modello ma alla mappa
 plot(p224r63_2011res_pca$map)
 plotRGB(p224r63_2011res_pca$map, r=1, g=2, b=3, stretch="lin")
