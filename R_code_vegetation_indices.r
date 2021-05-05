@@ -59,3 +59,13 @@ difndvi <- ndvi1 - ndvi2
 cld <- colorRampPalette(c('blue','white','red'))(100)
 plot(difndvi, col=cld)
 
+#giorno 3 05/05
+install.packages("rasterdiv")
+library(rasterdiv)
+#worldwide NDVI
+plot(copNDVI)
+copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
+library(rasterVis)
+levelplot(copNDVI)
+
+
