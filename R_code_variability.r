@@ -1,4 +1,5 @@
 # R_code_variability.r
+# lezione 19/05
 library(raster)
 library(RStoolbox)
 setwd("C:/lab/")
