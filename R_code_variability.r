@@ -51,5 +51,47 @@ summary(sentpca$model)
 # valore preciso 67,36% 
 
 
+# lezione 2 21/05 
+library(raster)
+library(RStoolbox)
+setwd("C:/lab/")
+sent <- brick("sentinel.png")
+sentpca <- rasterPCA(sent)
+plot(sentpca$map)
+summary(sentpca$model)
+# lego la map associata all'oggetto sentpca alla sola componente PC1 
+pc1 <- sentpca$map$PC1
+pc1sd5 <- focal(pc1, w=matrix(1/25, nrow=5, ncol=5), fun=sd)
+clsd <- colorRampPalette(c('blue','green','pink','magenta','orange','brown','red','yellow'))(100) 
+plot(pc1sd5, col=clsd)
+# funzione source
+# richiama un pezzo di codice già creato
+# esempio di codice creato da un altro utente
+# esempio di source
+# source test lezione.r
+# lo scarico da virtuale
+pc1 <- sentpca$map$PC1
+pc1sd7 <- focal(pc1, w=matrix(1/49, nrow=7, ncol=7), fun=sd)
+clsd <- colorRampPalette(c('blue','green','pink','magenta','orange','brown','red','yellow'))(100) 
+plot(pc1sd7, col=clsd)
+source("source_test_lezione.r")
+# ho ottenuto il risultato direttamente
+# r mi ha aperto il plot 7x7 scritto nel codice che era stato scritto da qualcuno e caricato nella cartella lab
+# operazione più immediata
+# ovviamente posso modificare la colorRampPalette ad esempio andando a modificare il codice stesso
+library(ggplot2)
+library(gridExtra)
+install.packages("viridis")
+# viridis per la colorazione automatica del plot
+library(viridis)
+# source_ggplot.r codice scaricato da virtuale
+source("source_ggplot.r")
+# funzione ggplot
+# creo una finestra nuova un pò come la funzione par
+C
+# funzione scale_fill_viridis
+
+
+
 
 
