@@ -88,8 +88,29 @@ library(viridis)
 source("source_ggplot.r")
 # funzione ggplot
 # creo una finestra nuova un pò come la funzione par
-C
-# funzione scale_fill_viridis
+ggplot() +
+geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer))
+# funzione scale_fill_viridis 
+# c'è già una color ramp palette stabilita in questo caso, ma posso scegliere varie opzioni
+ggplot() +
+geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) + scale_fill_viridis()
+# inserisco anche il titolo, che potrebbe servire dopo con grid.arrange
+p1 <- ggplot() +
+geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) + scale_fill_viridis() + ggtitle("Standard deviation of PC1 by viridis colour scale")
+# qui utilizzo ad esempio una color ramp palette tipo "magma"
+p2 <- ggplot() +
+geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) + scale_fill_viridis(option="magma") + ggtitle("Standard deviation of PC1 by magma colour scale")
+# color ramp palette "inferno"
+ggplot() +
+geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) + scale_fill_viridis(option="inferno") + ggtitle("Standard deviation of PC1 by inferno colour scale")
+# color ramp palette "turbo", dal blu al rosso, non molto adatta in caso di soggetti daltonici!
+p3 <- ggplot() +
+geom_raster(pc1sd5, mapping = aes(x = x, y = y, fill = layer)) + scale_fill_viridis(option="turbo") + ggtitle("Standard deviation of PC1 by turbo colour scale")
+# con la funzione grid arrange creo una finestra in cui inserire tutti i miei ggplot precedenti con varie scale di colori
+# posso vedere quale scala di colori è preferibile a seconda dell'oggetto o oggetti che voglio indagare
+# in generale viridis utilizza il giallo come valori centrali ma l'occhio umano tende a considerare troppo il giallo perciò potrei pensare erroneamente che in giallo ci siano i valori massimi
+grid.arrange(p1, p2, p3, nrow=1)
+
 
 
 
