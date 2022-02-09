@@ -6,7 +6,9 @@ library(raster)
 setwd("C:/lab/")
 # con la funzione setwd spieghiamo ad R dove andare a "pescare" i dati
 # i dati sono all'interno della cartella lab
-# la cartella lab deve essere creata nell'unità :C e non sul desktop 
+# la cartella lab deve essere creata nell'unità C: e non sul desktop
+# La funzione setwd viene settata in questo modo per il sistema windows
+# per Mac o per Linus la funzione setwd sarebbe diversa
 p224r63_2011 <- brick("p224r63_2011_masked.grd")
 # la funzione brick serve a importare tutto il pacchetto dell'immagine satellitare
 # il pacchetto relativo all'immagine satellitare è denominato "p224r63_2011_masked.gdr"
