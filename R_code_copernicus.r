@@ -26,3 +26,5 @@ plot(burned,col=cl)
 burnedres <- aggregate(burned, fact=100)
 dev.off()
 
+# R è key sensitive
+# occhio alle virgole, agli spazi e alle minuscole/maiuscole
