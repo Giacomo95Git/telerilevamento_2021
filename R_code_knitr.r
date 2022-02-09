@@ -3,6 +3,7 @@
 setwd("C:/lab/")
 # la funzione require come la funzione library richiama il pacchetto scelto
 # library o require è indifferente 
+# il pacchetto knitr permette ad esempio l'integrazione del codice all'interno di un documento in LaTeX 
 library(knitr)
 # la funzione stitch crea automaticamente un report basato su uno script R e uno schema 
 # lo script R è il file "R_code_greenland.r" 
