@@ -12,8 +12,9 @@ plot(p224r63_2011)
 # PC1 e PC2 rispettivamente spiegano il 90% e il 10% della variabilità
 # PC1 90% variabilità -> perdita del 10% di variabilità ma scopo raggiunto
 # pch simbologia 
-# pch utilizzo come singolo i pallini
-# cex esagerazione 2x
+# pch utilizzo come simbolo i pallini
+# cex esprime l'esagerazione di scala
+# esagerazione 2x
 plot(p224r63_2011$B1_sre,p224r63_2011$B2_sre, col=red, pch=19, cex=2) 
 plot(p224r63_2011$B2_sre,p224r63_2011$B1_sre, col=red, pch=19, cex=2)
 # funzione pairs
@@ -25,3 +26,6 @@ plot(p224r63_2011$B2_sre,p224r63_2011$B1_sre, col=red, pch=19, cex=2)
 # indici di correlazione di Pearson
 # indici di correlazione di Pearson teorici variabili tra -1 e +1 
 pairs(p224r63_2011)
+
+# R è key sensitive
+# occhio alle virgole, agli spazi e alle minuscole/maiuscole
