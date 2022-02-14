@@ -1,6 +1,8 @@
 # R_code_vegetation_indices
 library(raster)
 setwd("C:/lab/")
+# associo con la funzione brick l'immagine scaricata .jpg all'ogetto utilizzando anche lo stesso nome
+# non posso fare il plotRGB della sola immagine jpg, devo prima associarla ad un nuovo oggetto tramite la funzione brick
 defor1 <- brick("defor1.jpg")
 defor2 <- brick("defor2.jpg")
 par(mfrow=c(2,1))
@@ -16,6 +18,18 @@ par(mfrow=c(2,1))
 plotRGB(defor1, r=1, g=2, b=3, stretch="lin")
 plotRGB(defor2, r=1, g=2, b=3, stretch="lin")
 # difference vegetation index 
+# DVI difference from NIR-RED
+# per ottenere NIR associo l'oggetto defor1 al nome defor1.1 
+# per ottenere RED associo l'oggetto defor1 al nome defor 1.2
+# defor1.1, defor 1.2 e defor 1.3 hanno valori da 0 a 255
+# valore max fino a 2^8=256 (valori da 0 a 255)
+# range 8 bit e range 16 bit 
+# i valori min e max del NDVI variano da -1 a +1 
+# NDVI permette di paragonare due dati a differenza di DVI
+# caso vegetazione/piante
+# gran parte della radiazione rossa viene assorbita
+# gran parte della radiazione infrarossa viene riflessa
+# in realtà la riflettanza nel RED non è mai zero, ma comunque è molto bassa
 dvi1 <- defor1$defor1.1 - defor1$defor1.2
 plot(dvi1)
 dev.off()
