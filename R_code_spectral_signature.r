@@ -2,6 +2,7 @@
 
 # ogni oggetto, geologico o biologico, ha una propria firma spettrale 
 library(raster)
+# il pacchetto rgdal servirà per la funzione click
 library(rgdal)
 library(ggplot2)
 
@@ -17,10 +18,19 @@ plotRGB(defor2, r=1, g=2, b=3, stretch="hist")
 # fa parte del pacchetto raster
 # serve a cliccare sulla mappa e chiedere qualsiasi tipo di informazioni
 # necessita del pacchetto rgdal
+# id è l'identificazione
+# id T=true o F=false
+# xy sono le coordinate e i punti coordinate x e y
+# type è il punto, ovvero p
+# pch è il simbolo
+# 16 corrisponde al pallino
+# cex è l'esagerazione 
+# con col scelgo il colore
 
 click(defor2, id=T, xy=T, cell=T, type="p", pch=16, cex=4, col="orange")
 
 #results
+
 #punto nella vegetazione
 # alta riflettanza nell'infrarosso
 #      x     y   cell defor2.1 defor2.2 defor2.3
