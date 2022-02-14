@@ -1,4 +1,4 @@
-# Giorno 1
+# Giorno 1 21/04
 # R code classification
 # classificazione delle immagini 
 # accorpo immagini con pixel simili in CLASSI
@@ -42,6 +42,7 @@ plot(sunc$map)
 # scelgo una colorRampPalette
 cl <- colorRampPalette(c('yellow','red','black'))(100)
 plot(sunc$map,col=cl)
+# per generare il pdf
 pdf("sun.pdf")
 sun <- brick("sun.gif")
 sunc <- unsuperClass(sun, nClasses=3)
