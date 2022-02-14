@@ -80,6 +80,7 @@ source("source_test_lezione.r")
 # operazione più immediata
 # ovviamente posso modificare la colorRampPalette ad esempio andando a modificare il codice stesso
 library(ggplot2)
+# per la funzione grid arrange mi serve il pacchetto gridExtra
 library(gridExtra)
 install.packages("viridis")
 # viridis per la colorazione automatica del plot
