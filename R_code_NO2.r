@@ -59,12 +59,21 @@ plot(EN$EN_0013, col=cls)
 # 9. Compute a PCA over the 13 images 
 
 ENpca <- rasterPCA(EN)
-
+# con summary eseguo un sommario del mio modello ad esempio
+# posso vedere come è spiegata la variabilità attraverso le PC
 summary(ENpca$model)
 plotRGB(ENpca$map, r=1, g=2, b=3, stretch="lin")
 
 # 10. Compute the local variabiliy (local standard deviation) of the first PC
-
+# la funzione local necessita del pacchetto raster
+# la funzione local calcola la statistica nell'intorno della moving window
+# con la moving window mi "muovo" da una matrice all'altra attraverso un certo valore matematico
+# questo valore può essere la media aritmetica o la deviazione standard
+# la matrice o finestra può essere di diverse dimensioni
+# matrice 3x3 ok
+# matrice o finestra 13x13 potrebbe risultare troppo grande, anche se dipende dall'ambiente e dall'analisi
+# matrice 5x5 ideale
+# con sd indico standard deviation
 PC1sd<- focal(ENpca$map$PC1, w=matrix(1/9, nrow=3, ncol=3), fun=sd)
 plot(PC1sd, col=cls)
 
