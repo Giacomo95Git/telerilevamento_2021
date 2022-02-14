@@ -13,7 +13,7 @@ plot(p224r63_2011)
 # PC1 e PC2 rispettivamente spiegano il 90% e il 10% della variabilità
 # PC1 90% variabilità -> perdita del 10% di variabilità ma scopo raggiunto
 # pch simbologia 
-# pch utilizzo come singolo i pallini
+# pch utilizzo come singolo i pallini (contrassegnato un certo numero di riferimento per i pallini)
 # cex esagerazione 2x
 plot(p224r63_2011$B1_sre,p224r63_2011$B2_sre, col=red, pch=19, cex=2) 
 plot(p224r63_2011$B2_sre,p224r63_2011$B1_sre, col=red, pch=19, cex=2)
@@ -49,14 +49,14 @@ plotRGB(p224r63_2011res , r=4 ,g=3, b=2, stretch="lin")
 # indico il nuovo oggetto con _pca
 # mai usare il simbolo -
 # il simbolo - viene letto come "meno" e non come trattino
-#al nuovo oggetto viene associata una map e un modello
+# al nuovo oggetto viene associata una map e un modello
 p224r63_2011res_pca <- rasterPCA(p224r63_2011res)
 # con la funzione summary indico il sommario ad esempio del modello prodotto
 # associo il nuovo oggetto al solo modello tramite $
 summary(p224r63_2011res_pca$model)
 #la PC1 spiega il 99,83% della variabilità
 # con le prime tre componenti spiego il 99,998% della variabilità
-# la PC1 solitamente spiega la % percentuale della variabilità
+# la PC1 solitamente spiega la maggiore % percentuale della variabilità
 # faccio un plot del nuovo oggetto associandolo non più al suo modello ma alla mappa
 plot(p224r63_2011res_pca$map)
 plotRGB(p224r63_2011res_pca$map, r=1, g=2, b=3, stretch="lin")
