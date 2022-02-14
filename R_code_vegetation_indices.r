@@ -75,6 +75,7 @@ plot(difndvi, col=cld)
 
 #giorno 3 05/05
 install.packages("rasterdiv")
+# il pacchetto rasterdiv è utile per ricavare informazioni,tramite una serie di funzioni, sugli indici di diversità
 library(rasterdiv)
 #worldwide NDVI
 plot(copNDVI)
