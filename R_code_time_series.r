@@ -82,7 +82,7 @@ levelplot(TGr, col.regions=cl)
 # con names.attr=c do un nome ad ognuno dei quattro grafici
 levelplot(TGr,col.regions=cl, names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
 # aggiungo un ulteriore argomento
-# con main= do un titolo al mio grafico finale
+# con main= assegno un titolo al mio grafico finale
 levelplot(TGr,col.regions=cl, main="LST variation in time",
           names.attr=c("July 2000","July 2005", "July 2010", "July 2015"))
 pdf("lstvar.pdf")
@@ -122,4 +122,5 @@ plot(melt_amount,col=clb)
 levelplot(melt_amount,col.regions=clb)
 dev.off()
 
-
+# R è key sensitive
+# occhio sempre alle minuscole,maiuscole, alle parentesi, agli spazi e alle virgole 
