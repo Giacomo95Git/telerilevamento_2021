@@ -11,3 +11,6 @@ library(knitr)
 # con stitch viene creato dentro R un report che poi verrà salvato nella cartella .r
 stitch("R_code_greenland.r", template=system.file("misc", "knitr-template.Rnw", package="knitr"))
 # copio tutto il codice "time series"
+# posso scaricare il documento .tex dal virtuale
+# all'interno dell'articolo non uso più library ma usepackage
+# documentclass{article} è un articolo 
