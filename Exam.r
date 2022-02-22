@@ -15,9 +15,7 @@ setwd("C:/lab/ESAME")
 #richiamo attraverso la funzione library il pacchetto raster
 #può essere usata anche la funzione acquire
 #il pacchetto raster serve per sviluppare le immagini satellitari che scarico
-> library(raster)
-Carico il pacchetto richiesto: sp
-> Carico il pacchetto richiesto: sp
+library(raster)
 #richiamo il pacchetto ncdf4
 #il pacchetto ncdf4 servirà per la funzione aggregate
 #con aggregate posso eventualmente ridurre i pixel di un'immagine
