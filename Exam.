@@ -1,0 +1,455 @@
+
+
+levelplot(BandeP,col.regions=clvi,main="Bande immagine Landsat",names.attr=c("Banda1","Banda2","Banda3","Banda4","Banda5","Banda6","Banda7"))
+clnir<-colorRampPalette(c("red", "orange", "yellow")) (100)
+levelplot(BandeP$B5P,col.regions=clnir)
+levelplot(BandeP$PRIMA_5,col.regions=clnir)
+
+BandePcut<-crop(BandeP, extent(BandeP, 3000, 5000, 2500, 4000))
+plotRGB(bandePcut15,r=4,g=3,b=2,stretch="Lin")
+dviP<-BandeP$LC08_L2SP_183033_20210927_20211001_02_T1_SR_B5-BandeP$LC08_L2SP_183033_20210927_20211001_02_T1_SR_B4
+cldvi<- colorRampPalette(c("darkblue","yellow","red","black"))(100)
+plot(dviP,col=cldvi)
+ndviP<- dviP/ (BandeP$LC08_L2SP_183033_20210927_20211001_02_T1_SR_B5+ BandeP$LC08_L2SP_183033_20210927_20211001_02_T1_SR_B4)
+plot(ndviP,col=cldvi)
+par(mfrow=c(2,2))
+plot(dviP,col=cldvi)
+plot(ndviP,col=cldvi)
+
+
+library(pplot2)
+bandePres<-aggregate(BandeP, fact=10)
+plotRGB(bandePres,r=4,g=3,b=2,stretch="Lin")
+pairs(bandePres)
+
+bandePres_pca<-rasterPCA(bandePres)
+summary(bandePres_pca$model)
+plotRGB(bandePres_pca$map,r=4,g=3,b=2,stretch="Lin")
+
+vi<-spectralIndices(bandePres, red=4, nir=5)
+clvi<-colorRampPalette(c("black","grey","red","orange","yellow","white"))(300)
+plot(vi,col=clvi)
+#plotto solo l'NDVI
+plot(vi$NDVI,col=clvi)
+#ottengo lo stesso risultato con ggr ma più raffinato e con scala di valori più completa
+
+
+BandeP5<-unsuperClass(BandeP,nclasses=5)
+
+cl5<-colorRampPalette(c("black","grey","green","red","orange"))(100)
+plot(BandeP5$map,col=cl55)
+
+
+ext_ggs<-raster::extent(680000, 720000, 4300000, 4310000)
+> cut<-crop(Bande,ext_ggs)
+> plotRGB(cut,r=4,g=3,b=2,stretch="Lin")
+
+
+ext_ggs<-raster::extent(680000, 720000, 4300000, 4320000)
+> cut<-crop(Bande,ext_ggs)
+> cutuc3<-unsuperClass(cut,nClasses=3)
+cl33<-colorRampPalette(c("black","green","red"))(100)
+plot(cutuc3$map,col=cl33)
+
+#ESAME TELERILEVAMENTO
+#CODICE ESAME
+#Analisi delle variazioni di vegetazione nell'isola di Eubea in Grecia a seguito degli incendi dell'estate 2021
+#Climate change:gli incendi nel 2021 sono stati numerosi e la Grecia ha vissuto un'estate intensiva
+#Eubea verso la fine di luglio e l'inizio di agosto 2019 colpita da incendi importanti
+#distrutti più di 56 mila ettari di terreno secondo le ricostruzioni
+#Nord dell'isola di Eubea(città di Pefki) colpita duramente da incendi
+#richiamo innanzitutto la set working directory
+#lavoro con la cartella ESAME creata nella cartella lab
+#la cartella di lavoro lab deve essere nell'unità C:
+#non può essere collocata su desktop
+setwd("C:/lab/ESAME")
+#richiamo attraverso la funzione library il pacchetto raster
+#può essere usata anche la funzione acquire
+#il pacchetto raster serve per sviluppare le immagini satellitari che scarico
+> library(raster)
+Carico il pacchetto richiesto: sp
+> Carico il pacchetto richiesto: sp
+#richiamo il pacchetto ncdf4
+#il pacchetto ncdf4 servirà per la funzione aggregate
+#con aggregate posso eventualmente ridurre i pixel di un'immagine
+#fact=x sarà il fattore di scala per ridurre l'immagine
+# es. fact=10 faccio la media di 10x10=100 valori e faccio un solo pixel
+library(ncdf4)
+#richiamo il pacchetto rasterVis 
+library(rasterVis)
+#il pacchetto RStoolbox è necessario per usare una funzione utile alla classificazione delle immagini
+library(RStoolbox)
+#il pacchetto rgdal è utile per la funzione click
+# funzione click servirà sempre per la classificazione di immagini e indici di riflettività
+library(rgdal)
+
+> library(ggplot2)
+
+#Ho scaricato i dati originali Landsat dell'Isola di Eubea e aree limitrofe dal sito USGS Earth Explorer
+#Search criteria ritaglio la zona di mio interesse
+#Inserisco la finestra temporale di mio interesse
+#In questo caso ci interessa fare un confronto tra pre Estate e post Estate 
+#in particolare tra pre agosto e dopo agosto
+# Scelgo con Data set i dati di mio interesse
+# in questo caso ho scelto i dati relativi a Landsat8-9
+#Livello 2 perchè è il livello nel quale è già stata applicata una correzione all'atmosfera
+#il dato L2 è più corretto
+#Scelgo le due immagini (con lo stesso codice riferito allo stesso quadrante) di due date differenti
+# Scarico i file .tif relativi alle singole bande
+# Landsat 8 bande
+# Banda 2 blu
+# Banda 3 green
+# Banda 4 red
+# Banda 5 infrared
+# Ci interessa solo la banda 5 relativa al più vicino infrarosso
+# rinomino i file
+# Es. PRIMA_2 PRIMA_3 PRIMA_4 per i file relativi rispettivamente a banda 2,banda 3 banda 4 ecc..
+# Per ottenere l'immagine a colori naturali non posso usare la funzione brick
+# con brick prendo un intero pacchetto di dati di tutte le bande (che non ho)
+# faccio uno stack delle singole bande
+#definisco un pattern
+# i file delle bande hanno in comune la sigla "PRIMA"
+# richiamo tramite funzione list.files
+# il nuovo oggetto lo rinomino rlistP
+> rlistP<-list.files(pattern="PRIMA")
+# con la funzione lapply applico la funzione raster ad una lista di file (quelli rlist che hanno in comune PRIMA)
+# lapply(x,FUN)
+# X lista
+# FUN funzione
+# nomino l'oggetto ImportP
+importP<-lapply(rlistP,raster)
+# gruppo di file raster tutti assieme tramite la funzione stack
+# nomino il fil BandeP
+# Ora ho tutte le bande in un unico file raster
+# rasterstack
+BandeP<-stack(importP)
+#faccio lo stesso con i file.tif relativi all'immagine satellitari posteriore, quella post agosto
+# 25 maggio 2019
+# 27 settembre 2019
+rlistD<-list.files(pattern="DOPO")
+importD<-lapply(rlistD,raster)
+BandeP<-stack(importP)
+BandeD<-stack(importD)
+# Plotto le singole bande relative all'immagine satellitare di maggio
+plot(BandeP,main="Bande della area di studio Maggio")
+#plotRGB
+# oggetto raster multilayered multibanda su cui viene montato lo schema RGB
+#Schema RGB
+#RED
+#GREEN 
+#BLU
+#Se monto la banda 4 sul rosso, la banda 3 sul verde e la banda 2 sul blu ottengo il plot dell'immagine satellitare a colori naturali
+plotRGB(BandeP, r=4, g=3, b=2)
+# stretch="Lin" ottengo dei colori più nitidi e posso apprezzare eventualmente oggetti diversi anche con lo stretch="hist"
+plotRGB(BandeP, r=4, g=3, b=2, stretch="Lin")
+plotRGB(BandeP, r=4, g=3, b=2, stretch="hist")
+
+# comparazione diversi plotRGB per apprezzare eventuali differenze e dettagli
+# funzione par per settaggio griglia di lavoro
+# mfrow primo numero riga secondo numero colonne
+par(mfrow=c(2,2))
+
+plotRGB(BandeP, r=4, g=3, b=2)
+plotRGB(BandeP, r=4, g=3, b=2, stretch="Lin")
+#infrarosso sul rosso per plotRGB diverso
+# sfrutto il fatto che la vegetazione riflette molto nell'infrarosso, un pò meno nel rosso e così via
+#Apprezzo già un'immagine satellitare diversa da quella a colori naturali
+plotRGB(BandeP, r=5, g=3, b=2)
+plotRGB(BandeP, r=5, g=3, b=2, stretch="Lin")
+
+# posso utilizzare un plot più raffinato che è richiamato tramite la funzione levelplot
+# assegno una scala di colori ben precisa
+# assegno titolo (Bande Immagini Landsat come per il primo plot)
+# assegno titoli ad ogni banda
+levelplot(BandeP,col.regions=clvi,main="Bande immagine Landsat",names.attr=c("Banda1","Banda2","Banda3","Banda4","Banda5","Banda6","Banda7"))
+clnir<-colorRampPalette(c("red", "orange", "yellow")) (100)
+levelplot(BandeP$B5P,col.regions=clnir)
+levelplot(BandeP$PRIMA_5,col.regions=clnir)
+> ext_ggsD<-raster::extent(680000, 720000, 4300000, 4320000)
+> cutD<-crop(BandeD,ext_ggsD)
+> ext_ggsP<-raster::extent(680000, 720000, 4300000, 4320000)
+> cutP<-crop(BandeP,ext_ggsP)
+> cutPuc3<-unsuperClass(cutP,nClasses=3)
+> cl33<-colorRampPalette(c("black","green","red"))(100)
+> plot(cutPuc3$map,col=cl33)
+> cutDuc3<-unsuperClass(cutD,nClasses=3)
+> plot(cutDuc3$map,col=cl33)
+> freq(cutPuc3$map)
+     value  count
+[1,]     1 264201
+[2,]     2 418553
+[3,]     3 206379
+[4,]    NA    645
+> freq(cutDuc3$map)
+     value  count
+[1,]     1 258000
+[2,]     2 294479
+[3,]     3 337299
+> plot(cutPuc3$map,col=cl33)
+> plot(cutDuc3$map,col=cl33)
+> spre<-264201+418553+206379
+> proppre<-freq(cutPuc3$map)/spre
+> proppre
+            value        count
+[1,] 1.124691e-06 0.2971445217
+[2,] 2.249382e-06 0.4707428472
+[3,] 3.374073e-06 0.2321126311
+[4,]           NA 0.0007254258
+> spost<-25800+294479+337299
+> proppost<-freq(cutDuc3$map)/spost
+> proppost
+            value     count
+[1,] 1.520732e-06 0.3923489
+[2,] 3.041464e-06 0.4478237
+[3,] 4.562196e-06 0.5129414
+> plot(cutDuc3$map,col=cl33)
+> click(BandeP,id=T,xy=T,cell=T,type="p",pch=16,col="yellow")
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 685650 4315590 27647513    8935    9289   10174   10838   15727   16234
+  PRIMA_7
+1   13965
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 697950 4305420 30224662    7797    7941    8639    8489   13976   11680
+  PRIMA_7
+1    9763
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 714750 4309830 29107875    7515    7692    7519    7294    7349    7593
+  PRIMA_7
+1    7618
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 695730 4304430 30475421    7815    7999    8768    8549   15217   12117
+  PRIMA_7
+1    9872
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 682230 4312710 28377095    8778    9081   10458   10771   18415   16003
+  PRIMA_7
+1   12823
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 690870 4303740 30650082    8200    8450    9266    9425   14626   13673
+  PRIMA_7
+1   11284
+Error in graphics::locator(1, type, ...) : 
+  graphics device closed during call to locator or identify
+> cutPuc5<-unsuperClass(cutP,nClasses=5)
+> cl33<-colorRampPalette(c("black","green","red"))(100)
+> cl55<-colorRampPalette(c("white","brown","seagreen1","pink3","steelblue3"))(100)
+> plot(cutPuc5$map,col=cl55)
+> cutDuc5<-unsuperClass(cutD,nClasses=5)
+> plot(cutDuc5$map,col=cl55)
+> plot(cutPuc5$map,col=cl55)
+> plot(cutDuc5$map,col=cl55)
+> plot(cutPuc5$map,col=cl55)
+> click(Bande,id=T,xy=T,cell=T,type="p",pch=16,col="yellow")
+Error in h(simpleError(msg, call)) : 
+  error in evaluating the argument 'x' in selecting a method for function 'click': oggetto "Bande" non trovato
+> click(BandeP,id=T,xy=T,cell=T,type="p",pch=16,col="yellow")
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 715740 4311150 28773464    7316    7543    7476    7231    7363    7686
+  PRIMA_7
+1    7713
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 707790 4317570 27146585    7500    7754    7669    7432    7552    7808
+  PRIMA_7
+1    7803
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 697950 4305420 30224662    7797    7941    8639    8489   13976   11680
+  PRIMA_7
+1    9763
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 711210 4304970 30339119    8218    8367    9241    8794   17909   12967
+  PRIMA_7
+1   10172
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 684780 4306170 30034198   23100   24629   25203   26384   30842   29900
+  PRIMA_7
+1   26389
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 686340 4313700 28126399   10752   12171   14012   15387   17227   18382
+  PRIMA_7
+1   17244
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 707220 4300440 31486737   29503   30417   30227   30951   33469   29016
+  PRIMA_7
+1   25765
+       x       y     cell PRIMA_1 PRIMA_2 PRIMA_3 PRIMA_4 PRIMA_5 PRIMA_6
+1 683550 4303980 30589030   30220   30603   31211   31887   33731   32586
+  PRIMA_7
+1   29149
+Error in graphics::locator(1, type, ...) : 
+  graphics device closed during call to locator or identify
+> click(BandeD,id=T,xy=T,cell=T,type="p",pch=16,col="yellow")
+Error in graphics::locator(1, type, ...) : 
+  plot.new has not been called yet
+> cutDuc5<-unsuperClass(cutD,nClasses=5)
+> plot(cutPuc5$map,col=cl55)
+> plot(cutPuc5$map,col=cl55)
+> plot(cutDuc5$map,col=cl55)
+> click(BandeD,id=T,xy=T,cell=T,type="p",pch=16,col="yellow")
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 696390 4302540 30913476   8382   8509   8742   9257  10544  11930  11851
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 687000 4313490 28142448  10853  11647  12412  12963  17010  16497  13183
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 693180 4301550 31163872   8659   8827   9250   9940  11896  14737  13863
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 686100 4305960 30047759   8098   8213   8896   8532  16865  12691   9775
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 699030 4308510 29402955   8068   8112   8192   8285   8923  10870  11161
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 714840 4312140 28484971   7862   7927   7675   7323   7271   7353   7348
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 688200 4305840 30078193   7848   7966   8554   8084  18188  11723   8978
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 686430 4314360 27922290  10888  11388  12473  13381  16997  17301  15486
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 700710 4305180 30245612   7967   8074   8245   8493   9360  10850  10930
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 696180 4309830 29068856   8344   8448   8657   8898   9789  12080  12341
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 706350 4314690 27839453   8392   8468   8793   9190  11276  11136   9610
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 693390 4312380 28423528   8645   8793   9020   9409  10527  12840  12759
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 697500 4305630 30131640   8350   8470   8681   8852   9542  12148  12801
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 694620 4301640 31141147   8287   8430   8726   9356  10970  12087  10820
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 695940 4317240 27193871   8488   8594   8716   8924   9703  11945  12483
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 700590 4312380 28423768   8079   8224   8467   8942  10420  11004   9998
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 705690 4300650 31392019   8920   9128   9589  10142  12744  15407  14310
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 707790 4300440 31445226   9176   9499  10295  11003  15013  16577  14148
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 711540 4304850 30329474   9123   9324  10097  10253  16739  13883  11591
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 687990 4312140 28484076   8767   9522  11159  11915  17807  17360  14469
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 685890 4317030 27246673   9254   9697  10669  11305  16182  17941  14153
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 682680 4301760 31110385   8636   8949   9945  10005  16066  15069  12206
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 691200 4304190 30495798   7911   7980   8439   8127  16231  11587   9077
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 681240 4307610 29630092   8113   8314   9093   8751  18832  12382   9654
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 684240 4306950 29797194   7576   7742   8332   7927  15219  10154   8394
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 683790 4314270 27944975   9312   9827  11078  11596  17827  17286  13830
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 683910 4317120 27223834   9524  10114  11593  13008  18940  19082  14887
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 685560 4318470 26882294   8962   9179  10063  10548  16800  15395  12129
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 704250 4306620 29881362   8421   8550   8814   9180  10373  12567  11916
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 705120 4307400 29684025   8773   8946   9596  10256  14619  16351  13732
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 712740 4300770 31361890   8646   8800   9342   9470  15504  14143  11579
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 692070 4301310 31224563   8769   8859   9063   9346  10513  14818  15801
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 700710 4318230 26943527   9060   9238   9660  10235  11624  14821  15438
+       x       y     cell DOPO_1 DOPO_2 DOPO_3 DOPO_4 DOPO_5 DOPO_6 DOPO_7
+1 705000 4319220 26693167   8676   8756   9285   9056  15861  13732  11082
+Error in graphics::locator(1, type, ...) : 
+  graphics device closed during call to locator or identify
+> DVIP<-BandeP$PRIMA_5-BandeP$PRIMA_4
+> NDVIP<-DVIP/(BandeP$PRIMA_5+BandeP$PRIMA_4)
+> clndvi<-colorRampPalette(c("black","grey","red","orange","yellow","white"))(300)
+> plot(NDVIP,col=clndvi)
+> DVID<-BandeD$DOPO_5-BandeD$DOPO_4
+> NDVID<-DVID/(BandeD$DOPO_5+BandeD$DOPO_4)
+> plot(NDVID,col=clndvi)
+> plot(NDVIP,col=clndvi)
+> plot(NDVID,col=clndvi)
+> plot(NDVIP,col=clndvi)
+> freq(cutPuc5$map)
+     value  count
+[1,]     1 263203
+[2,]     2   3560
+[3,]     3 226218
+[4,]     4  57629
+[5,]     5 338523
+[6,]    NA    645
+> freq(cutDuc5$map)
+     value  count
+[1,]     1 196738
+[2,]     2 132796
+[3,]     3 151752
+[4,]     4 254360
+[5,]     5 154132
+> plot(cutDuc5$map,col=cl55)
+> 
+> cl55bis<-colorRampPalette(c("black","red","green","yellow","white"))(100)
+> plot(cutDuc5$map,col=cl55bis)
+> plot(cutPuc5$map,col=cl55bis)
+> plot(NDVIP,col=clndvi)
+> plot(cutPuc5$map,col=cl55bis)
+> plot(cutDuc5$map,col=cl55bis)
+> plot(cutPuc5$map,col=cl55bis)
+> plot(cutDuc5$map,col=cl55bis)
+> plot(cutPuc5$map,col=cl55bis)
+> plot(cutDuc5$map,col=cl55bis)
+> plot(cutPuc5$map,col=cl55bis)
+> plot(cutDuc5$map,col=cl55bis)
+> plot(cutPuc5$map,col=cl55bis)
+> plot(cutDuc5$map,col=cl55bis)
+> spre5<-263203+3560+226218+57629+338523
+> proppre5<-freq(cutPuc5$map)/ spre5
+> proppre5
+            value        count
+[1,] 1.124691e-06 0.2960220799
+[2,] 2.249382e-06 0.0040039004
+[3,] 3.374073e-06 0.2544253784
+[4,] 4.498765e-06 0.0648148252
+[5,] 5.623456e-06 0.3807338160
+[6,]           NA 0.0007254258
+> spost5<-196738+132796+151752+254360+154132
+> proppost5<-freq(cutDuc5$map)/spost5
+> proppost5
+            value     count
+[1,] 1.123876e-06 0.2211091
+[2,] 2.247752e-06 0.1492462
+[3,] 3.371628e-06 0.1705504
+[4,] 4.495503e-06 0.2858691
+[5,] 5.619379e-06 0.1732252
+> plot(cutPuc5$map,col=cl55bis)
+> plot(cutDuc5$map,col=cl55bis)
+> plot(cutPuc5$map,col=cl55bis)
+> plot(cutDuc5$map,col=cl55bis)
+> cutD
+class      : RasterBrick 
+dimensions : 667, 1334, 889778, 7  (nrow, ncol, ncell, nlayers)
+resolution : 30, 30  (x, y)
+extent     : 679995, 720015, 4300005, 4320015  (xmin, xmax, ymin, ymax)
+crs        : +proj=utm +zone=34 +datum=WGS84 +units=m +no_defs 
+source     : memory
+names      : DOPO_1, DOPO_2, DOPO_3, DOPO_4, DOPO_5, DOPO_6, DOPO_7 
+min values :   6411,   7207,   7355,   7003,   6972,   7215,   7097 
+max values :  18893,  20141,  24049,  25020,  26056,  29075,  26024 
+
+> NDVIP<-DVIP/(BandeP$PRIMA_5+BandeP$PRIMA_4)
+> NDVIPcut<-DVIP/(cutP$PRIMA_5+cutP$PRIMA_4)
+Warning message:
+In DVIP/(cutP$PRIMA_5 + cutP$PRIMA_4) :
+  Raster objects have different extents. Result for their intersection is returned
+> DVIPcut<-cutP$PRIMA_5-cutP$PRIMA_4
+> NDVIPcut<-DVIPcut/(cutP$PRIMA_5+cutP$PRIMA_4)
+> plot(NDVIPcut,col=clndvi)
+> DVIDcut<-cutD$DOPO_5-cutD$DOPO_4
+> NDVIDcut<-DVIDcut/(cutD$DOPO_5+cutD$DOPO_4)
+> plot(NDVIDcut,col=clndvi)
+> NDVIdiff<-NDVIDP-NDVID
+Errore: oggetto "NDVIDP" non trovato
+> NDVIdiff<-NDVIPcut-NDVIDcut
+> plot(NDVIdiff,col=clndvi)
+> levelplot(NDVIdiff)
+> levelplot(NDVIdiff,col.regions=clndvi)
+> levelplot(NDVIdiff)
+> levelplot(NDVIdiff,main="Differenza NDVI Maggio-Settembre 2021")
+
+
+
+
