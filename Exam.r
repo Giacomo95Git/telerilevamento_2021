@@ -1,31 +1,8 @@
-
-
-
-
-
-#funzione aggregate per aggregare un oggetto secondo un fattore 10x10=100 
-# aggregazione pixel ma con perdita di risoluzione
-# lo vedo dalle specifiche dell'oggetto che la risoluzione è diminuita 
-# ma in questo modo posso utilizzare la funzione pairs per plottare tutte le correlazioni possibili tra tutte le variabili
-bandePres<-aggregate(BandeP, fact=10)
-plotRGB(bandePres,r=4,g=3,b=2,stretch="Lin")
-pairs(bandePres)
-# posso compattare il pacchetto di dati in un numero minore di bande
-# uso la funzione rasterPCA
-bandePres_pca<-rasterPCA(bandePres)
-# con summary richiamo il sommario del nostro modello
-# vedo che ad esempio PC1 la componente principale spiega tot % di variabilità (di solito è la %)
-# quasi tutti i dati sono spiegati dalla PC1
-summary(bandePres_pca$model)
-# per vedere la mappa lego sempre l'oggetto map all'oggetto di riferimento
-plotRGB(bandePres_pca$map,r=4,g=3,b=2,stretch="Lin")
-
-
-
-
+#BENTORNATI SU r
 #ESAME TELERILEVAMENTO
 #CODICE ESAME
 #Analisi delle variazioni di vegetazione nell'isola di Eubea in Grecia a seguito degli incendi dell'estate 2021
+#Monitoraggio pre-post agosto 2021
 #Climate change:gli incendi nel 2021 sono stati numerosi e la Grecia ha vissuto un'estate intensiva
 #Eubea verso la fine di luglio e l'inizio di agosto 2019 colpita da incendi importanti
 #distrutti più di 56 mila ettari di terreno secondo le ricostruzioni
@@ -82,7 +59,7 @@ library(ggplot2)
 # i file delle bande hanno in comune la sigla "PRIMA"
 # richiamo tramite funzione list.files
 # il nuovo oggetto lo rinomino rlistP
-> rlistP<-list.files(pattern="PRIMA")
+rlistP<-list.files(pattern="PRIMA")
 # con la funzione lapply applico la funzione raster ad una lista di file (quelli rlist che hanno in comune PRIMA)
 # lapply(x,FUN)
 # X lista
