@@ -76,8 +76,10 @@ rlistD<-list.files(pattern="DOPO")
 importD<-lapply(rlistD,raster)
 BandeP<-stack(importP)
 BandeD<-stack(importD)
-# Plotto le singole bande relative all'immagine satellitare di maggio
+# Plotto le singole bande relative all'immagine satellitare di maggio, così come posso fare anche per l'immagine di settembre
 plot(BandeP,main="Bande della area di studio Maggio")
+plot(BandeD,main="Bande della area di studio Settembre")
+
 #plotRGB
 # oggetto raster multilayered multibanda su cui viene montato lo schema RGB
 #Schema RGB
@@ -103,6 +105,13 @@ plotRGB(BandeP, r=4, g=3, b=2, stretch="Lin")
 plotRGB(BandeP, r=5, g=3, b=2)
 plotRGB(BandeP, r=5, g=3, b=2, stretch="Lin")
 
+# posso anche plottare assieme Maggio e settembre tramite la funzione par
+par(mfrow=c(1,2))
+plotRGB(BandeP, r=5, g=3, b=2,main="MAGGIO 2021",stretch="Lin")
+plotRGB(BandeD, r=5, g=3, b=2,main="SETTEMBRE 2021",stretch="Lin")
+
+
+
 # posso utilizzare un plot più raffinato che è richiamato tramite la funzione levelplot
 # assegno una scala di colori ben precisa
 # assegno titolo (Bande Immagini Landsat come per il primo plot)
@@ -113,8 +122,8 @@ levelplot(BandeP,col.regions=clvi,main="Bande immagine Landsat",names.attr=c("Ba
 #valori più alti di riflettanza per la vegetazione sana nella banda dell'infrarosso
 clnir<-colorRampPalette(c("red", "orange", "yellow")) (100)
 #aggancio lo stack alla sola banda 5 dell'infrarosso
-levelplot(BandeP$PRIMA_5,col.regions=clnir)
-
+l1<- levelplot(BandeP$PRIMA_5,col.regions=clnir)
+l2<- levelplot(BandeD$DOPO_5,col.regions=clnir) 
 
 # per la mia analisi di monitoraggio so che l'area centro-nord è stata la più colpita dagli incendi perciò potrebbe anche essere stata la zona più soggetta a variazioni di vegetazione o indici di vegetazione
 # faccio uno zoom sull'area a Nord 
@@ -135,6 +144,11 @@ cutP<-crop(BandeP,ext_ggsP)
 # potrei apprezzare delle differenze in questo modo
 levelplot(cutP$PRIMA_5,col.regions=clnir)
 levelplot(cutD$DOPO_5,col.regions=clnir)
+#colorRampPalette a scelta oltre a quella per l'infrarosso
+cl5<-colorRampPalette(c("black","red","green","yellow","white"))(100)
+levelplot(cutD$PRIMA_5,col=regions=cl5,main="levelplot Settembre")
+levelplot(cutD$DOPO_5,col=regions=cl5,main="levelplot Settembre")
+
 ######################################################################################################
 #CLASSIFICAZIONE
 # funzione unsuperClass
@@ -150,7 +164,7 @@ plot(cutPuc5$map,col=cl5)
 # stesso procedimento per l'immagine ritagliata post agosto
 # per cut D (immagine ritagliata dopo Agosto)
 cutDuc5<-unsuperClass(cutD,nClasses=5)
-plot(cutDuc5$map,col=cl5)1
+plot(cutDuc5$map,col=cl5)
 par(mfrow=c(1,2))
 plot(cutPuc5$map,col=cl5)
 plot(cutDuc5$map,col=cl5)
@@ -274,10 +288,7 @@ freq(cutPuc5$map)
 
 # vedere la variazione di campi coltivati e di vegetazione (già in non ottimo stato) da Maggio a Settembre 
 cover <- c("Vegetazione", "Campi coltivati")
-percent_1992 <- c(90.00, 0.09)
-plot(cutPuc5$map,col=cl5)
 percent_Maggio <- c(25.44, 38.07)
-plot(cutDuc5$map,col=cl5)
 percent_Sett <- c(22.11, 17.05)
 percentmesi <- data.frame(cover, percent_Maggio , percent_Sett)
 ggplot(percentmesi, aes(x=cover, y=percent_Maggio, color=cover)) + geom_bar(stat="identity", fill="white")
