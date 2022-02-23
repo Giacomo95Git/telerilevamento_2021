@@ -116,27 +116,7 @@ clnir<-colorRampPalette(c("red", "orange", "yellow")) (100)
 levelplot(BandeP$PRIMA_5,col.regions=clnir)
 
 
-
-#funzione aggregate per aggregare un oggetto secondo un fattore 10x10=100 
-# aggregazione pixel ma con perdita di risoluzione
-# lo vedo dalle specifiche dell'oggetto che la risoluzione è diminuita 
-# ma in questo modo posso utilizzare la funzione pairs per plottare tutte le correlazioni possibili tra tutte le variabili
-bandePres<-aggregate(BandeP, fact=10)
-plotRGB(bandePres,r=4,g=3,b=2,stretch="Lin")
-pairs(bandePres)
-# posso compattare il pacchetto di dati in un numero minore di bande
-# uso la funzione rasterPCA
-bandePres_pca<-rasterPCA(bandePres)
-# con summary richiamo il sommario del nostro modello
-# vedo che ad esempio PC1 la componente principale spiega tot % di variabilità (di solito è la %)
-# quasi tutti i dati sono spiegati dalla PC1
-summary(bandePres_pca$model)
-# per vedere la mappa lego sempre l'oggetto map all'oggetto di riferimento
-plotRGB(bandePres_pca$map,r=4,g=3,b=2,stretch="Lin")
-
-
-
-# per la mia analisi di monitoraggio so che l'area a nord è stata la più colpita dagli incendi
+# per la mia analisi di monitoraggio so che l'area centro-nord è stata la più colpita dagli incendi perciò potrebbe anche essere stata la zona più soggetta a variazioni di vegetazione o indici di vegetazione
 # faccio uno zoom sull'area a Nord 
 # utilizzo un determinato set di coordinate x e y per risalire all'area
 #l'area di competenza va da valori di x di 680000 a valori di x di 720000
@@ -147,8 +127,16 @@ ext_ggsD<-raster::extent(680000, 720000, 4300000, 4320000)
 # Primo oggetto immagine di partenza, secondo oggetto ritaglio e area di interesse
 # Vengono generati due cut, uno per l'immagine pre Agosto uno per l'immagine post Agosto
 cutD<-crop(BandeD,ext_ggsD)
-> ext_ggsP<-raster::extent(680000, 720000, 4300000, 4320000)
-> cutP<-crop(BandeP,ext_ggsP)
+ext_ggsP<-raster::extent(680000, 720000, 4300000, 4320000)
+cutP<-crop(BandeP,ext_ggsP)
+
+#levelplot dell'area di ritaglio con la sola banda dell'infrarosso per vedere meglio la vegetazione e il suo stato di salute in toto
+#la vegetazione può riflettere molto o poco nell'infrarosso a seconda del suo stato di salute
+# potrei apprezzare delle differenze in questo modo
+levelplot(cutP$PRIMA_5,col.regions=clnir)
+levelplot(cutD$DOPO_5,col.regions=clnir)
+######################################################################################################
+#CLASSIFICAZIONE
 # funzione unsuperClass
 # classificazione dell'immagine
 # argomenti sono nome dell'immagine, i pixel da utilizzare come training set (nSamples) e il numero di classi (nClasses)
@@ -215,9 +203,6 @@ plot(vi,col=clvi)
 # lo aggancio all'oggetto vi tramite $
 plot(vi$NDVI,col=clvi)
 #ottengo lo stesso risultato con ggr ma più raffinato e con scala di valori più completa
-
-
-
 
 
 #faccio il calcolo degli indici di vegetazione solo per l'area di ritaglio
