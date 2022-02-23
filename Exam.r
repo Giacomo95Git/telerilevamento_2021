@@ -157,12 +157,12 @@ cutD<-crop(BandeD,ext_ggsD)
 # ogni oggetto genera a sua volta sia una mappa che un modello
 cutPuc5<-unsuperClass(cutP,nClasses=5)
 #imposto una scala di colori per le 5 classi
-cl5<-colorRampPalette(c("white","brown","seagreen1","pink3","steelblue3"))(100)
+cl5<-colorRampPalette(c("black","red","green","yellow","white"))(100)
 plot(cutPuc5$map,col=cl5)
 # stesso procedimento per l'immagine ritagliata post agosto
 # per cut D (immagine ritagliata dopo Agosto)
 cutDuc5<-unsuperClass(cutD,nClasses=5)
-plot(cutDuc5$map,col=cl5)
+plot(cutDuc5$map,col=cl5)1
 par(mfrow=c(1,2))
 plot(cutPuc5$map,col=cl5)
 plot(cutDuc5$map,col=cl5)
@@ -172,8 +172,9 @@ plot(cutDuc5$map,col=cl5)
 # classe 1 Specchi d'acqua
 # Classe 2 vegetazione meno sana
 # Classe 3 terreni agricoli
-# Classe 4 Centri abitati/prive vegetazione
+# Classe 4 Centri abitati/prive vegetazione/aree più antropiche/meno vegetazione ma non danneggiate
 # Classe 5 vegetazione più sana
+# iterazioni infinite delle repliche delle mappe
 # con la funzione click posso cliccare su un punto della mapppa e avere le informazioni che voglio relative alle bande
 # banda dell'infrarosso molto interessante da confrontare 
 # valori diversi
@@ -285,6 +286,28 @@ freq(cutPuc5$map)
 [3,] 3.371628e-06 0.1705504
 [4,] 4.495503e-06 0.2858691
 [5,] 5.619379e-06 0.1732252
+
+# vedere la variazione di campi coltivati e di vegetazione (già in non ottimo stato) da Maggio a Settembre 
+cover <- c("Vegetazione", "Campi coltivati")
+percent_1992 <- c(90.00, 0.09)
+plot(cutPuc5$map,col=cl5)
+percent_Maggio <- c(25.44, 38.07)
+plot(cutDuc5$map,col=cl5)
+percent_Sett <- c(22.11, 17.05)
+percentmesi <- data.frame(cover, percent_Maggio , percent_Sett)
+ggplot(percentmesi, aes(x=cover, y=percent_Maggio, color=cover)) + geom_bar(stat="identity", fill="white")
+ggplot(percentmesi, aes(x=cover, y=percent_Sett, color=cover)) + geom_bar(stat="identity", fill="white")
+p2<-ggplot(percentmesi, aes(x=cover, y=percent_Sett, color=cover)) + geom_bar(stat="identity", fill="white")
+p1<-ggplot(percentmesi, aes(x=cover, y=percent_Maggio, color=cover)) + geom_bar(stat="identity", fill="white")
+grid.arrange(p1,p2,nrow=1)
+pdf("Variazione campi coltivati vegetazione.pdf")
+grid.arrange(p1,p2,nrow=1)
+# campi coltivati in nettissima diminuzione nell'area nord dell'isola
+# potrebbero essere stati gli incendi nell'area nord ad aver contribuito alla diminuzione così drastica dei campi coltivati, nonchè della vegetazione
+
+# in ogni caso già le immagini satellitari relative al mese di settembre mostravano un cambiamento rispetto al mese di Maggio
+# la vegetazione potrebbe anche aver risentito del caldo record oltre che degli incendi per cui comunque il tema del riscaldamento globale e del global warming rimane centrale
+# occorre impegnarsi sempre di più per contrastare il riscaldamento globale e salvaguardare il nostro pianeta
 
 
 
